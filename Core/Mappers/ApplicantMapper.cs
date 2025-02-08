@@ -103,7 +103,6 @@ namespace Core.Mappers
             applicant.MCity = request.MCity is null ? applicant.MCity : request.MCity;
             applicant.MState = request.MState is null ? applicant.MState : request.MState;
             applicant.MZipcode = request.MZipcode is null ? applicant.MZipcode : request.MZipcode;
-            applicant.LastModified = DateTime.ParseExact(DateTime.Today.ToString(), "dd/M/yyyy hh:mm:ss tt", CultureInfo.InvariantCulture);
         }
     }
 

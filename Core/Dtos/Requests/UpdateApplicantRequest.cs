@@ -24,6 +24,5 @@ namespace Core.Dtos.Requests
         public string? MCity { get; set; }
         public string? MState { get; set; }
         public string? MZipcode { get; set; }
-        public DateTime LastModified { get; set; }
     }
 }
