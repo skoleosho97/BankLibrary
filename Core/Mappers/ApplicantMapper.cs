@@ -33,6 +33,31 @@ namespace Core.Mappers
             };
         }
 
+        public static Applicant ToApplicant(this ApplicantResponse response)
+        {
+            return new Applicant
+            {
+                FirstName = response.FirstName,
+                MiddleName = response.MiddleName,
+                LastName = response.LastName,
+                DateOfBirth = response.DateOfBirth,
+                Gender = response.Gender,
+                Email = response.Email,
+                Phone = response.Phone,
+                SocialSecurity = response.SocialSecurity,
+                DriversLicense = response.DriversLicense,
+                Income = response.Income,
+                Address = response.Address,
+                City = response.City,
+                State = response.State,
+                Zipcode = response.Zipcode,
+                MAddress = response.MAddress,
+                MCity = response.MCity,
+                MState = response.MState,
+                MZipcode = response.MZipcode,
+            };                 
+        }
+
         public static Applicant ToCreateApplicant(this CreateApplicantRequest request)
         {
             return new Applicant
