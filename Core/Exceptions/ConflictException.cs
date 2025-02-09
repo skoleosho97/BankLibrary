@@ -1,4 +1,4 @@
-namespace Core.Exceptions.Conflict
+namespace Core.Exceptions
 {
     public class ConflictException : Exception
     {
