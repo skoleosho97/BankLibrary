@@ -22,6 +22,21 @@ namespace Middleware.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Application_Applicant", b =>
+                {
+                    b.Property<int>("ApplicantsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ApplicationsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ApplicantsId", "ApplicationsId");
+
+                    b.HasIndex("ApplicationsId");
+
+                    b.ToTable("Application_Applicant");
+                });
+
             modelBuilder.Entity("Core.Models.Applicant", b =>
                 {
                     b.Property<int>("Id")
@@ -114,6 +129,63 @@ namespace Middleware.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Applicants");
+                });
+
+            modelBuilder.Entity("Core.Models.Application", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ApplicationType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PrimaryApplicantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrimaryApplicantId");
+
+                    b.ToTable("Applications");
+                });
+
+            modelBuilder.Entity("Application_Applicant", b =>
+                {
+                    b.HasOne("Core.Models.Applicant", null)
+                        .WithMany()
+                        .HasForeignKey("ApplicantsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Models.Application", null)
+                        .WithMany()
+                        .HasForeignKey("ApplicationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Models.Application", b =>
+                {
+                    b.HasOne("Core.Models.Applicant", "PrimaryApplicant")
+                        .WithMany("IApplications")
+                        .HasForeignKey("PrimaryApplicantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PrimaryApplicant");
+                });
+
+            modelBuilder.Entity("Core.Models.Applicant", b =>
+                {
+                    b.Navigation("IApplications");
                 });
 #pragma warning restore 612, 618
         }

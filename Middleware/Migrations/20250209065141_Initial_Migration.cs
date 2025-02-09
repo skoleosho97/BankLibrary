@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Middleware.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigration : Migration
+    public partial class Initial_Migration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,11 +59,72 @@ namespace Middleware.Migrations
                     FOR EACH ROW
                     EXECUTE FUNCTION ""Fn_Applicants_Updated""();
             ");
+
+            migrationBuilder.CreateTable(
+                name: "Applications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ApplicationType = table.Column<string>(type: "text", nullable: false),
+                    ApplicationStatus = table.Column<string>(type: "text", nullable: false),
+                    PrimaryApplicantId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Applications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Applications_Applicants_PrimaryApplicantId",
+                        column: x => x.PrimaryApplicantId,
+                        principalTable: "Applicants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Application_Applicant",
+                columns: table => new
+                {
+                    ApplicantsId = table.Column<int>(type: "integer", nullable: false),
+                    ApplicationsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Application_Applicant", x => new { x.ApplicantsId, x.ApplicationsId });
+                    table.ForeignKey(
+                        name: "FK_Application_Applicant_Applicants_ApplicantsId",
+                        column: x => x.ApplicantsId,
+                        principalTable: "Applicants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Application_Applicant_Applications_ApplicationsId",
+                        column: x => x.ApplicationsId,
+                        principalTable: "Applications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Application_Applicant_ApplicationsId",
+                table: "Application_Applicant",
+                column: "ApplicationsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applications_PrimaryApplicantId",
+                table: "Applications",
+                column: "PrimaryApplicantId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Application_Applicant");
+
+            migrationBuilder.DropTable(
+                name: "Applications");
+
             migrationBuilder.DropTable(
                 name: "Applicants");
         }
