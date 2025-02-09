@@ -59,3 +59,5 @@ void ApplyMigrations()
     if (_db.Database.GetPendingMigrations().Any())
         _db.Database.Migrate();
 }
+
+public partial class Program { }
