@@ -1,7 +1,8 @@
 namespace Core.Exceptions
 {
-    public class BadRequestException : Exception
+    public class BadRequestException : BaseException
     {
-        public BadRequestException(string message) : base(message) {}
+        public override int StatusCode { get; } = 409;
+        public BadRequestException(string message) : base(message) { }
     }
 }
