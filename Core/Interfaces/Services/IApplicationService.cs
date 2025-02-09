@@ -10,7 +10,12 @@ namespace Core.Interfaces.Services
 {
     public interface IApplicationService
     {
-        Task<ApplicationResponse> Apply(CreateApplicationRequest request);
+        Task<Application> GetApplicationById(int id);
+        Task<ApplicationResponse> GetApplicationResponseById(int id);
+        void DeleteApplication(int id);
+        Task<ApplyResponse> Apply(CreateApplicationRequest request);
+        Task<IEnumerable<ApplicationResponse>> GetAllApplications();
         Task<List<Applicant>> CreateApplicants(List<CreateApplicantRequest> requests);
+        Task<List<Applicant>> GetApplicants(List<int> requests);
     }
 }

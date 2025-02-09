@@ -79,7 +79,10 @@ namespace Core.Models
     
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedAt { get; set; }
-        // public List<> Applications { get; set; }
+        
+        public List<Application> Applications { get; set; } = null!;
+
+        public ICollection<Application> IApplications { get; set; } = null!;
     }
 
 }

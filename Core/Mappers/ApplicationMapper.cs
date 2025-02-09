@@ -11,13 +11,28 @@ namespace Core.Mappers
     {
         public static ApplicationResponse ToApplicationResponse(this Application application)
         {
+            List<ApplicantResponse> results = application.Applicants.Select(result => result.ToApplicantResponse()).ToList();
+
             return new ApplicationResponse
             {
                 Id = application.Id,
-                //ApplicationType = application.ApplicationType,
-                //ApplicationStatus = application.ApplicationStatus,
-                //PrimaryApplicant = application.PrimaryApplicant,
-                //Applicants = application.Applicants,
+                ApplicationType = application.ApplicationType,
+                ApplicationStatus = application.ApplicationStatus,
+                Applicants = results,
+                PrimaryApplicant = application.PrimaryApplicant,
+            };
+        }
+
+        public static ApplyResponse ToApplyResponse(this Application application)
+        {
+            List<ApplicantResponse> results = results = application.Applicants.Select(result => result.ToApplicantResponse()).ToList();
+
+            return new ApplyResponse
+            {
+                Id = application.Id,
+                ApplicationType = application.ApplicationType,
+                Applicants = results,
+                ApplicationStatus = application.ApplicationStatus
             };
         }
     }

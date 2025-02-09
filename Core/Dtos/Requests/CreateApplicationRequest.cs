@@ -8,11 +8,15 @@ namespace Core.Dtos.Requests
 {
     public class CreateApplicationRequest
     {
-        // public ApplicationType ApplicationType { get; set; }
+        [Required]
+        public string ApplicationType { get; set; } = string.Empty;
         [Required]
         public bool NoNewApplicants { get; set; }
-        public List<int>? ApplicantList { get; set; }
-        public List<CreateApplicantRequest>? Applicants { get; set; }
-        
+        public List<int> ApplicantIds { get; set; } = [];
+        public List<CreateApplicantRequest> Applicants { get; set; } = [];
+
+        //public int ApplicationAmount { get; set; }
+        //public int CardOfferId { get; set; }
+        //public string DepositAccountNumber { get; set; } 
     }
 }

@@ -1,11 +1,10 @@
 using Core.Dtos.Requests;
 using Core.Dtos.Responses;
-using Core.Exceptions.Conflict;
-using Core.Exceptions.NotFound;
 using Core.Mappers;
 using Core.Models;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
+using Core.Exceptions;
 
 namespace Middleware.Services
 {
@@ -29,7 +28,7 @@ namespace Middleware.Services
 
         public async Task<ApplicantResponse> GetApplicantById(int id)
         {
-            Applicant applicant = await repository.FindById(id) ?? throw new ApplicantNotFoundException();
+            Applicant applicant = await repository.FindById(id) ?? throw new NotFoundException("Applicant was not found.");
 
             return applicant.ToApplicantResponse();
         }
@@ -45,14 +44,14 @@ namespace Middleware.Services
         public async void UpdateApplicant(int id, UpdateApplicantRequest request)
         {
             await Validate(request.Email, request.Phone, request.SocialSecurity, request.DriversLicense);
-            Applicant applicant = await repository.FindById(id) ?? throw new ApplicantNotFoundException();
+            Applicant applicant = await repository.FindById(id) ?? throw new NotFoundException("Applicant was not found.");
             applicant.ToUpdateApplicant(request);
             await repository.Save();
         }
 
         public async void DeleteApplicant(int id)
         {
-            Applicant applicant = await repository.FindById(id) ?? throw new ApplicantNotFoundException();
+            Applicant applicant = await repository.FindById(id) ?? throw new NotFoundException("Applicant was not found.");
             await repository.Remove(applicant);
         }
 
