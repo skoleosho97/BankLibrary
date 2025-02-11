@@ -25,6 +25,8 @@ namespace Tests.Utils
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
             context.Database.Migrate();
+
+            MockDataGenerator.Initialize(context);
         }
     }
 }
