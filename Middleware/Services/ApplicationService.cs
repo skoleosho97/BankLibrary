@@ -92,7 +92,7 @@ namespace Middleware.Services
                 // do credit card stuff
             }
 
-            await repository.Save(application);
+            await repository.Save();
             ApplyResponse response = application.ToApplyResponse();
 
             HelperService.ProcessApplication(application, 

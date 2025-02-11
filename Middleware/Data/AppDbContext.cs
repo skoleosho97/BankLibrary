@@ -9,6 +9,10 @@ namespace Middleware.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Id
+            modelBuilder.Entity<Applicant>().Property(b => b.Id).UseIdentityByDefaultColumn();
+            modelBuilder.Entity<Application>().Property(b => b.Id).UseIdentityByDefaultColumn();
+
             // Default timestamps in Applicant
             modelBuilder.Entity<Applicant>().Property(b => b.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             modelBuilder.Entity<Applicant>().Property(b => b.LastModified).HasDefaultValueSql("CURRENT_TIMESTAMP");
