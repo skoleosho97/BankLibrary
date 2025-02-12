@@ -1,4 +1,5 @@
 using Core.Models;
+using Core.Models.Account;
 using Microsoft.EntityFrameworkCore;
 
 namespace Middleware.Data
@@ -34,6 +35,7 @@ namespace Middleware.Data
         public DbSet<Applicant> Applicants { get; set; }
         public DbSet<Application> Applications { get; set; }
         public DbSet<Member> Members { get; set; }
+        public DbSet<Account> Accounts { get; set; }
     }
 
 }
