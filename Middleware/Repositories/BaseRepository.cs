@@ -13,7 +13,7 @@ namespace Middleware.Repositories
             this.context = context;
         }
 
-        public async Task<T> FindById(int id)
+        public async Task<T?> FindById(int id)
         {
             return await context.Set<T>().FindAsync(id);
         }
@@ -38,12 +38,20 @@ namespace Middleware.Repositories
         {
             await context.Set<T>().AddAsync(model);
             await context.SaveChangesAsync();
+
+            //T obj = await context.Set<T>().AddAsync(model);
+            //await context.SaveChangesAsync();
+            //return obj;
         }
 
         public async Task Save(List<T> model)
         {
             await context.Set<T>().AddRangeAsync(model);
             await context.SaveChangesAsync();
+
+            //List<T> obj = await context.Set<T>().AddAsync(model);
+            //await context.SaveChangesAsync();
+            //return obj;
         }
     }
 }
