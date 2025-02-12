@@ -46,7 +46,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(x => 
+{
+    x.AllowAnyHeader();
+    x.AllowAnyMethod();
+    x.AllowCredentials();
+    //x.WithOrigins("");
+    x.SetIsOriginAllowed(origin => true);
+});
 app.MapControllers();
 
 ApplyMigrations();
