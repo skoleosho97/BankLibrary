@@ -39,5 +39,11 @@ namespace Middleware.Repositories
             await context.Set<T>().AddAsync(model);
             await context.SaveChangesAsync();
         }
+
+        public async Task Save(List<T> model)
+        {
+            await context.Set<T>().AddRangeAsync(model);
+            await context.SaveChangesAsync();
+        }
     }
 }
