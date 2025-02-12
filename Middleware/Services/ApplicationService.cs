@@ -5,6 +5,7 @@ using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Core.Mappers;
 using Core.Models;
+using Core.Models.Accounts;
 
 namespace Middleware.Services
 {
@@ -12,14 +13,20 @@ namespace Middleware.Services
     {
         private readonly IApplicationRepository repository;
         private readonly IApplicantService applicantService;
+        private readonly IMemberService memberService;
+        private readonly IAccountService accountService;
 
         public ApplicationService(
             IApplicationRepository repository, 
-            IApplicantService applicantService
+            IApplicantService applicantService,
+            IMemberService memberService,
+            IAccountService accountService
         )
         {
             this.repository = repository;
             this.applicantService = applicantService;
+            this.memberService = memberService;
+            this.accountService = accountService;
         }
 
         public async Task<Application> GetApplicationById(int id)
@@ -62,7 +69,8 @@ namespace Middleware.Services
             else
             {
                 List<int> applicantIds = request.ApplicantIds ?? throw new BadRequestException(@"NoNewApplicants property was set to true
-                                                                                                but ApplicantIds property was not found in the request.");
+                                                                                                but ApplicantIds property was not found
+                                                                                                in the request.");
 
                 if (applicantIds.Count is 0)
                     throw new BadRequestException("NoNewApplicants property was set to true but applicantIds property is empty.");
@@ -96,7 +104,7 @@ namespace Middleware.Services
             ApplyResponse response = application.ToApplyResponse();
 
             HelperService.ProcessApplication(application, 
-                (status, reason) => 
+                async (status, reason) => 
                 {
                     application.ApplicationStatus = status;
                     response.ApplicationStatus = status;
@@ -105,9 +113,30 @@ namespace Middleware.Services
                     if (status is not "APPROVED")
                         return;
 
-                    // Create members
-                    // Create accounts
-                    // Set AccountsCreated, CreatedAccounts, MembersCreated, CreatedMembers
+                    IEnumerable<Task<Member>> membersTasks = application.Applicants.Select(async applicant =>
+                        await memberService.CreateMember(applicant)
+                    );
+
+                    IEnumerable<Member> iMembers = await Task.WhenAll(membersTasks);
+                    List<Member> members = iMembers.ToList();
+                    Member primaryMember = members.First();
+
+                    List<Account> accounts = await accountService.CreateAccount(application, primaryMember, members);
+
+                    members.ForEach(member => member.Accounts = accounts);
+                    await memberService.SaveAllMembers(members);
+
+                    List<AccountResponse> createdAccounts = accounts.Select(account => 
+                        new AccountResponse() { AccountNumber = account.AccountNumber }).ToList();
+                    List<MemberResponse> createdMembers = members.Select(member =>
+                        new MemberResponse() { 
+                            MembershipId = member.MembershipId, 
+                            Name = $"{member.Applicant.FirstName} {member.Applicant.MiddleName} {member.Applicant.LastName}" }).ToList();
+
+                    response.AccountsCreated = true;
+                    response.CreatedAccounts = createdAccounts;
+                    response.MembersCreated = true;
+                    response.CreatedMembers = createdMembers;
                 }
             );
 
