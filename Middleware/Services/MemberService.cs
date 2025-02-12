@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Core.Exceptions;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
@@ -29,8 +25,8 @@ namespace Middleware.Services
             {
                 Applicant = applicant
             };
-
             await repository.Save(member);
+            
             return member;
         }
 
