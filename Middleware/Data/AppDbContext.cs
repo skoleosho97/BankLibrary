@@ -33,6 +33,7 @@ namespace Middleware.Data
 
         public DbSet<Applicant> Applicants { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<Member> Members { get; set; }
     }
 
 }

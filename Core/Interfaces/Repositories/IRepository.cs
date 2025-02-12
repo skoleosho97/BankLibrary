@@ -7,5 +7,6 @@ namespace Core.Interfaces.Repositories
         Task Remove(T model);
         Task Save();
         Task Save(T model);
+        Task Save(List<T> model);
     }
 }
