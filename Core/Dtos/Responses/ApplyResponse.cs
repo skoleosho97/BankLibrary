@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Core.Dtos.Responses
 {
     public class ApplyResponse
@@ -15,8 +10,8 @@ namespace Core.Dtos.Responses
         public string ApplicationStatus { get; set; } = string.Empty;
         public List<string> Reasons { get; set; } = [];
         public bool AccountsCreated { get; set; }
-        // List<CreatedAccountResponse> CreatedAccounts
+        public List<AccountResponse> CreatedAccounts { get; set; } = [];
         public bool MembersCreated { get; set; }
-        // List<CreatedMemberResponse> CreatedMembers  
+        public List<MemberResponse> CreatedMembers { get; set; } = [];
     }
 }
