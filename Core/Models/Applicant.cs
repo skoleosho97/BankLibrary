@@ -83,6 +83,17 @@ namespace Core.Models
         public List<Application> Applications { get; set; } = null!;
 
         public ICollection<Application> IApplications { get; set; } = null!;
-    }
 
+        public bool Equals(Applicant a)
+        {
+            if (this == a) return true;
+            if (a == null) return false;
+
+            return 
+                Email.Equals(a.Email) && 
+                Phone.Equals(a.Phone) && 
+                SocialSecurity.Equals(a.SocialSecurity) && 
+                DriversLicense.Equals(a.DriversLicense);
+        }
+    }
 }
