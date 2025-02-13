@@ -48,7 +48,7 @@ namespace Application.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetApplicantById([FromRoute] int id)
         {
-            ApplicantResponse applicant = await service.GetResponseApplicantById(id);
+            ApplicantResponse applicant = await service.GetApplicantResponseById(id);
 
             return Ok(applicant);
         }
