@@ -51,7 +51,7 @@ namespace Middleware.Services
 
         public async Task<ApplyResponse> Apply(CreateApplicationRequest request)
         {
-            Application? application = null;
+            Application application = null!;
 
             if (!request.NoNewApplicants)
             {
@@ -113,11 +113,7 @@ namespace Middleware.Services
                     if (status is not "APPROVED")
                         return;
 
-                    var membersTasks = application.Applicants.Select(async applicant =>
-                        await memberService.CreateMember(applicant)
-                    ).ToList();
-
-                    var members = (await Task.WhenAll(membersTasks)).ToList();
+                    List<Member> members = await CreateMembers(application.Applicants);
                     Member primaryMember = members.First();
 
                     List<Account> accounts = await accountService.CreateAccount(application, primaryMember, members);
@@ -131,10 +127,13 @@ namespace Middleware.Services
                             AccountType = Enum.TryParse<AccountType>(
                                 account.GetType().Name, 
                                 out AccountType enumType) ? enumType : null }).ToList();
+                                
                     List<MemberResponse> createdMembers = members.Select(member =>
                         new MemberResponse() { 
                             MembershipId = member.MembershipId, 
-                            Name = $"{member.Applicant.FirstName} {member.Applicant.MiddleName} {member.Applicant.LastName}" }).ToList();
+                            Name = $@"{member.Applicant.FirstName} 
+                            {(member.Applicant.MiddleName == "" ? "" : member.Applicant.MiddleName)} 
+                            {member.Applicant.LastName}" }).ToList();
 
                     response.AccountsCreated = true;
                     response.CreatedAccounts = createdAccounts;
@@ -157,16 +156,12 @@ namespace Middleware.Services
         public async Task<List<Applicant>> CreateApplicants(List<CreateApplicantRequest> requests)
         {
             var responses = requests.Select(async request => 
-                await applicantService.CreateApplicant(request)
+                await applicantService.CreateApplicantForApplication(request)
             ).ToList();
 
-            var results = await Task.WhenAll(responses);
+            var applicants = (await Task.WhenAll(responses)).ToList();
 
-            IEnumerable<Applicant> applicants = results.Select(result => 
-                result.ToApplicant()
-            );
-
-            return applicants.ToList();
+            return applicants;
         }
 
         public async Task<List<Applicant>> GetApplicants(List<int> requests)
@@ -175,9 +170,20 @@ namespace Middleware.Services
                 await applicantService.GetApplicantById(request)
             ).ToList();
 
-            var applicants = await Task.WhenAll(responses);
+            var applicants = (await Task.WhenAll(responses)).ToList();
 
-            return applicants.ToList();
+            return applicants;
+        }
+
+        public async Task<List<Member>> CreateMembers(List<Applicant> applicants)
+        {
+            var membersTasks = applicants.Select(async applicant =>
+                await memberService.CreateMember(applicant)
+            ).ToList();
+
+            var members = (await Task.WhenAll(membersTasks)).ToList();
+
+            return members;
         }
     }
 }
