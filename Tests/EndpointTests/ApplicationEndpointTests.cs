@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -25,7 +22,6 @@ namespace Tests.EndpointTests
             this.output = output;
         }
 
-        // POST
         [Fact]
         public async Task GET_POST_ReturnCreated_Apply()
         {
@@ -39,15 +35,19 @@ namespace Tests.EndpointTests
             var apply_response = await client.PostAsJsonAsync("/applications", request);
             apply_response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-            var application = await apply_response.Content.ReadFromJsonAsync<ApplicationResponse>();
+            var application = await apply_response.Content.ReadFromJsonAsync<ApplyResponse>();
 
             if (application is not null)
             {
                 output.WriteLine("Id: {0}", application.Id.ToString());
                 output.WriteLine("Type: {0}", application.ApplicationType);
+                output.WriteLine("Applicants: {0}", application.Applicants);
                 output.WriteLine("Status: {0}", application.ApplicationStatus);
-                //output.WriteLine("Applicants: {0}", application.Id.ToString());
-                //output.WriteLine("Primary Applicant: {0}", application.Id.ToString());
+                output.WriteLine("Reasons: {0}", application.Reasons);
+                output.WriteLine("Accounts Created?: {0}", application.AccountsCreated);
+                output.WriteLine("Created Accounts: {0}", application.CreatedAccounts);
+                output.WriteLine("Members Created?: {0}", application.MembersCreated);
+                output.WriteLine("Created Members: {0}", application.CreatedMembers);
             }
         }
     }
