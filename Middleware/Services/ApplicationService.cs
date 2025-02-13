@@ -103,7 +103,7 @@ namespace Middleware.Services
             await repository.Save();
             ApplyResponse response = application.ToApplyResponse();
 
-            HelperService.ProcessApplication(application, 
+            await HelperService.ProcessApplication(application, 
                 async (status, reason) => 
                 {
                     application.ApplicationStatus = status;
@@ -113,21 +113,24 @@ namespace Middleware.Services
                     if (status is not "APPROVED")
                         return;
 
-                    IEnumerable<Task<Member>> membersTasks = application.Applicants.Select(async applicant =>
+                    var membersTasks = application.Applicants.Select(async applicant =>
                         await memberService.CreateMember(applicant)
-                    );
+                    ).ToList();
 
-                    IEnumerable<Member> iMembers = await Task.WhenAll(membersTasks);
-                    List<Member> members = iMembers.ToList();
+                    var members = (await Task.WhenAll(membersTasks)).ToList();
                     Member primaryMember = members.First();
 
                     List<Account> accounts = await accountService.CreateAccount(application, primaryMember, members);
 
                     members.ForEach(member => member.Accounts = accounts);
-                    await memberService.SaveAllMembers(members);
+                    await memberService.SaveAllMembers();
 
                     List<AccountResponse> createdAccounts = accounts.Select(account => 
-                        new AccountResponse() { AccountNumber = account.AccountNumber }).ToList();
+                        new AccountResponse() { 
+                            AccountNumber = account.AccountNumber,
+                            AccountType = Enum.TryParse<AccountType>(
+                                account.GetType().Name, 
+                                out AccountType enumType) ? enumType : null }).ToList();
                     List<MemberResponse> createdMembers = members.Select(member =>
                         new MemberResponse() { 
                             MembershipId = member.MembershipId, 
@@ -153,11 +156,11 @@ namespace Middleware.Services
 
         public async Task<List<Applicant>> CreateApplicants(List<CreateApplicantRequest> requests)
         {
-            IEnumerable<Task<ApplicantResponse>> responses = requests.Select(async request => 
+            var responses = requests.Select(async request => 
                 await applicantService.CreateApplicant(request)
-            );
+            ).ToList();
 
-            IEnumerable<ApplicantResponse> results = await Task.WhenAll(responses);
+            var results = await Task.WhenAll(responses);
 
             IEnumerable<Applicant> applicants = results.Select(result => 
                 result.ToApplicant()
@@ -168,15 +171,11 @@ namespace Middleware.Services
 
         public async Task<List<Applicant>> GetApplicants(List<int> requests)
         {
-            IEnumerable<Task<ApplicantResponse>> responses = requests.Select(async request => 
+            var responses = requests.Select(async request => 
                 await applicantService.GetApplicantById(request)
-            );
+            ).ToList();
 
-            IEnumerable<ApplicantResponse> results = await Task.WhenAll(responses);
-
-            IEnumerable<Applicant> applicants = results.Select(result => 
-                result.ToApplicant()
-            );
+            var applicants = await Task.WhenAll(responses);
 
             return applicants.ToList();
         }

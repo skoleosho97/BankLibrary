@@ -9,10 +9,22 @@ namespace Core.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        
-        public string MembershipId { get; set; } = string.Empty;
-        public Applicant Applicant { get; set; } = new Applicant();
+        public string MembershipId { get; set; } = GenerateMembershipId();
+        public Applicant Applicant { get; set; } = null!;
         public List<Account> Accounts { get; set; } = [];
         //public List<Card> Cards { get; set; } = [];
+
+        private static string GenerateMembershipId()
+        {
+            List<int> sequence = [];
+
+            for (int i = 0; i < 8; i++)
+            {
+                Random random = new();
+                sequence.Add(random.Next(0, 9));
+            }
+
+            return string.Join("", sequence);
+        }
     }
 }

@@ -27,10 +27,14 @@ builder.Services.AddDbContext<AppDbContext>(options => {
 // Repositories
 builder.Services.AddScoped<IApplicantRepository, ApplicantRepository>();
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 // Services
 builder.Services.AddScoped<IApplicantService, ApplicantService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 

@@ -1,5 +1,5 @@
 using Core.Models;
-using Core.Models.Account;
+using Core.Models.Accounts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Middleware.Data
@@ -29,6 +29,19 @@ namespace Middleware.Data
                 .HasMany(e => e.IApplications)
                 .WithOne(e => e.PrimaryApplicant)
                 .HasForeignKey(e => e.PrimaryApplicantId)
+                .IsRequired();
+
+            // Many-to-many relationship between Account and Member
+            modelBuilder.Entity<Member>()
+                .HasMany(e => e.Accounts)
+                .WithMany(e => e.Members)
+                .UsingEntity("Account_Holder");
+
+            // Many-to-one relationship between Account and Member
+            modelBuilder.Entity<Account>()
+                .HasOne(e => e.PrimaryAccountHolder)
+                .WithMany()
+                .HasForeignKey(e => e.PrimaryAccountHolderId)
                 .IsRequired();
         }
 

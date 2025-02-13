@@ -26,7 +26,15 @@ namespace Middleware.Services
             return applicant.ToApplicantResponse();
         }
 
-        public async Task<ApplicantResponse> GetApplicantById(int id)
+        public async Task<Applicant> GetApplicantById(int id)
+        {
+            Applicant applicant = await repository.FindById(id) ?? throw new NotFoundException("Applicant was not found.");
+
+            return applicant;
+        }
+
+
+        public async Task<ApplicantResponse> GetResponseApplicantById(int id)
         {
             Applicant applicant = await repository.FindById(id) ?? throw new NotFoundException("Applicant was not found.");
 

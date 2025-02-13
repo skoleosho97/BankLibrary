@@ -22,14 +22,12 @@ namespace Middleware.Services
             switch (application.ApplicationType)
             {
                 case "CHECKING":
-                    accounts.Add(await CreateCheckingAccount(primary, members));
+                    var account = await CreateCheckingAccount(primary, members);
+                    accounts.Add(account);
                     break;
                 case "SAVINGS":
-                    accounts.Add(await CreateSavingsAccount(primary, members));
                     break;
                 case "CHECKING_AND_SAVINGS":
-                    accounts.Add(await CreateCheckingAccount(primary, members));
-                    accounts.Add(await CreateSavingsAccount(primary, members));
                     break;
                 default:
                     break;
@@ -49,6 +47,8 @@ namespace Middleware.Services
                 AvailableBalance = 0
             };
 
+            account.AccountNumber = account.GenerateAccountNumber();
+
             await repository.Save(account);
 
             return account;
@@ -64,6 +64,8 @@ namespace Middleware.Services
                 Members = members,
                 Apy = 0.006f
             };
+
+            account.AccountNumber = account.GenerateAccountNumber();
 
             await repository.Save(account);
             

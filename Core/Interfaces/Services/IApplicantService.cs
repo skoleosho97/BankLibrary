@@ -1,12 +1,14 @@
 using Core.Dtos.Requests;
 using Core.Dtos.Responses;
+using Core.Models;
 
 namespace Core.Interfaces.Services
 {
     public interface IApplicantService
     {
         Task<ApplicantResponse> CreateApplicant(CreateApplicantRequest request);
-        Task<ApplicantResponse> GetApplicantById(int id);
+        Task<Applicant> GetApplicantById(int id);
+        Task<ApplicantResponse> GetResponseApplicantById(int id);
         Task<IEnumerable<ApplicantResponse>> GetApplicants();
         void UpdateApplicant(int id, UpdateApplicantRequest request);
         void DeleteApplicant(int id);

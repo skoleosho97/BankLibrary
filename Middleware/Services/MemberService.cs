@@ -25,6 +25,7 @@ namespace Middleware.Services
             {
                 Applicant = applicant
             };
+            
             await repository.Save(member);
             
             return member;
@@ -35,9 +36,9 @@ namespace Middleware.Services
             return await repository.FindByMembershipId(id) ?? throw new NotFoundException("Requested member was not found.");
         }
 
-        public async Task SaveAllMembers(List<Member> members)
+        public async Task SaveAllMembers()
         {
-            await repository.Save(members);
+            await repository.Save();
         }
     }
 }

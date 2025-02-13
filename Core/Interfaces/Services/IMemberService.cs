@@ -6,6 +6,6 @@ namespace Core.Interfaces.Services
     {
         Task<Member> CreateMember(Applicant applicant);
         Task<Member> GetMemberByMembershipId(string id);
-        Task SaveAllMembers(List<Member> members);
+        Task SaveAllMembers();
     }
 }
