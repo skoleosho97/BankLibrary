@@ -10,9 +10,19 @@ namespace Middleware.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Id
-            modelBuilder.Entity<Applicant>().Property(b => b.Id).UseIdentityByDefaultColumn();
-            modelBuilder.Entity<Application>().Property(b => b.Id).UseIdentityByDefaultColumn();
+            // Workaround to get entities to be saved to context
+            modelBuilder.Entity<Applicant>().Property(b => b.Id)
+                .HasIdentityOptions(startValue: 100)
+                .UseIdentityByDefaultColumn();
+            modelBuilder.Entity<Application>().Property(b => b.Id)
+                .HasIdentityOptions(startValue: 100)
+                .UseIdentityByDefaultColumn();
+            modelBuilder.Entity<Member>().Property(b => b.Id)
+                .HasIdentityOptions(startValue: 100)
+                .UseIdentityByDefaultColumn();
+            modelBuilder.Entity<Account>().Property(b => b.Id)
+                .HasIdentityOptions(startValue: 100)
+                .UseIdentityByDefaultColumn();
 
             // Default timestamps in Applicant
             modelBuilder.Entity<Applicant>().Property(b => b.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
